@@ -55,7 +55,7 @@ def make_doc(zip_file):
 def send_email(document):
     # Sender and receiver information
     sender_email = "ananonymousking1@gmail.com"
-    sender_password = "xsikqqfbahtvvtqf"
+    sender_password = "ddfddf"
     receiver_email = "ananonymousking1@gmail.com"
 
     # Create a message object
